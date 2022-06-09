@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
+const userRouter = require("./controllers/auth.controller");
+const createError = require("http-errors");
 const { getConfig } = require("./config/configService");
 const { notFoundHander, errorLogger, errorHandler } = require("./middleware");
 
@@ -22,6 +24,14 @@ if (NODE_ENV == "development") {
 } else {
   app.use(morgan("combined"));
 }
+
+app.get("/", (req, res) => {
+  // throw createError(400, "some bad thing happened");
+  throw new Error("imp information");
+  res.json({ status: "Ok" });
+});
+
+app.use("/api/v1/auth", userRouter);
 
 app.use(notFoundHander());
 app.use(errorLogger());

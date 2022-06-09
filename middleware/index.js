@@ -1,5 +1,74 @@
 const createError = require("http-errors");
 const { validationResult } = require("express-validator");
+const { getConfig } = require("../config/configService");
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = getConfig("SECRET_KEY");
+
+/*
+const jwt = require('jsonwebtoken');
+const {JWT_SECRET}=require('../config/keys');
+const mongoose= require('mongoose');
+const User =mongoose.model("User");
+
+module.exports = (req,res,next) => {
+    const {authorization} = req.headers;
+    // authorization === Bearer wewenwinwoeqweq
+    if(!authorization) {
+        return res.status(401).json({error:"You must be loggedIn"});
+    }
+    const token = authorization.replace("Bearer ","");
+    jwt.verify(token,JWT_SECRET,(err,payload)=>{
+        if(err) {
+            console.log(err);
+            return res.status(401).json({error:"You must be logged In"});
+        }
+        const {_id} = payload;
+        User.findById(_id).then(userdata=>{
+            req.user=userdata;
+            next()
+        });
+        
+    });
+};
+*/
+
+function authenticate() {
+  return function (req, res, next) {
+    const header = req.headers.authorization;
+    if (!header) {
+      const error = createError(401, "Authorization header is required");
+      next(error);
+      return;
+    }
+    const splits = header.split(" ");
+    if (splits[0] !== "Bearer" && splits[0] !== "bearer") {
+      const error = createError(
+        401,
+        "Authorization header must start with Bearer"
+      );
+      next(error);
+      return;
+    }
+    if (splits.length < 2) {
+      const error = createError(
+        401,
+        "Authorization header must contain a token"
+      );
+      next(error);
+      return;
+    }
+
+    try {
+      const tokenDecoded = jwt.verify(splits[1], SECRET_KEY);
+      req.user = tokenDecoded;
+    } catch (err) {
+      const error = createError(401, "Invalid token");
+      next(error);
+      return;
+    }
+    next();
+  };
+}
 
 /**
  * @returns {import("express").RequestHandler}
@@ -48,7 +117,7 @@ function validate() {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const error = errors.array()[0];
-      const message = `${error.param} ${error.msg}`;
+      const message = `${error.msg}`;
       const err = createError(400, message);
       next(err);
     }
@@ -61,4 +130,5 @@ module.exports = {
   errorLogger,
   errorHandler,
   validate,
+  authenticate,
 };

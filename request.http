@@ -1,0 +1,27 @@
+POST /api/v1/auth/signup HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "email": "aniket@gmail.com",
+  "username":"aniket2",
+  "password":"password"
+}
+###
+GET / HTTP/1.1
+Host: localhost:8080
+###
+POST /api/v1/auth/login HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "username":"aniket",
+  "password":"password"
+}
+###
+
+GET /api/v1/auth/protected HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYTFjOGNmN2VkNzBlYjkzNTQ1MWQzYSIsIm5hbWUiOiJhbmlrZXQiLCJ1c2VybmFtZSI6ImFuaWtldCIsImVtYWlsIjoiYW5pa2V0QGdtYWlsLmNvbSIsImlhdCI6MTY1NDc3MDIyMCwiZXhwIjoxNjU1Mzc1MDIwfQ.ATpCq33ln8UbUvHQljTO9LEX_W8lJF1Y6y-IoY0jBRY
+Content-Type: application/json
+Host: localhost:8080
