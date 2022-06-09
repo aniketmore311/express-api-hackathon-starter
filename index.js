@@ -17,6 +17,7 @@ const MONGO_URI = getConfig("MONGO_URI");
 const app = express();
 
 app.use(cors());
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 if (NODE_ENV == "development") {
@@ -26,9 +27,7 @@ if (NODE_ENV == "development") {
 }
 
 app.get("/", (req, res) => {
-  // throw createError(400, "some bad thing happened");
-  throw new Error("imp information");
-  res.json({ status: "Ok" });
+  return res.json({ status: "Ok" });
 });
 
 app.use("/api/v1/auth", userRouter);
@@ -44,4 +43,7 @@ async function main() {
     console.log(`Backend server is running on http://localhost:${PORT}`);
   });
 }
-main();
+main().catch((error) => {
+  console.log(error);
+  process.exit(1);
+});

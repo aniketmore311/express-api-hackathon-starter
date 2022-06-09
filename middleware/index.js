@@ -4,34 +4,6 @@ const { getConfig } = require("../config/configService");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = getConfig("SECRET_KEY");
 
-/*
-const jwt = require('jsonwebtoken');
-const {JWT_SECRET}=require('../config/keys');
-const mongoose= require('mongoose');
-const User =mongoose.model("User");
-
-module.exports = (req,res,next) => {
-    const {authorization} = req.headers;
-    // authorization === Bearer wewenwinwoeqweq
-    if(!authorization) {
-        return res.status(401).json({error:"You must be loggedIn"});
-    }
-    const token = authorization.replace("Bearer ","");
-    jwt.verify(token,JWT_SECRET,(err,payload)=>{
-        if(err) {
-            console.log(err);
-            return res.status(401).json({error:"You must be logged In"});
-        }
-        const {_id} = payload;
-        User.findById(_id).then(userdata=>{
-            req.user=userdata;
-            next()
-        });
-        
-    });
-};
-*/
-
 function authenticate() {
   return function (req, res, next) {
     const header = req.headers.authorization;
